@@ -8,14 +8,14 @@ public class Ball extends Sprite {
 		super(5,5,Color.BLACK);
 	}
 	
-	public int getRaio() {
+	public int getRadius() {
 		return getWidth()/2;
 	}
 
 	@Override
 	public Point getPosition() {
 		Point pos = super.getPosition();
-		int r = getRaio();
+		int r = getRadius();
 		return new Point(pos.x + r, pos.y + r);
 	}
 

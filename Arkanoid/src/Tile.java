@@ -9,16 +9,17 @@ public class Tile extends Sprite {
 	private boolean alive = true;
 
 	public Tile(Color cor) {
-		super(18, 10, cor);
+		super(20, 5, cor);
 	}
 
-	public boolean bateu(Ball ball){
-		// Se o bloco nas esta vivo, nao pode bater...
-		if (!alive)
+	//this method is used to verify if the ball collided with the tile.
+	public boolean collided(Ball ball){
+		if (!alive) {
 			return false;
+		}
 		
-		Point pos=ball.getPosition();
-		int raio=ball.getRaio();
+		Point pos = ball.getPosition();
+		int raio = ball.getRadius();
 		
 		Rect rect=getBounds();
 		int top = rect.y;
@@ -45,9 +46,8 @@ public class Tile extends Sprite {
 
 	@Override
 	public void draw(Canvas canvas) {
-		if (alive)
+		if (alive) {
 			super.draw(canvas);
+		}
 	}
-
-
 }
