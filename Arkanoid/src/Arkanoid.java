@@ -13,6 +13,7 @@ public class Arkanoid extends GraphicApplication {
 
 	//private Tile tile;
 	private Tile tiles[] = new Tile[10];
+	private Tile tiles2[] = new Tile[10];
 	private Sprite paddle;
 	private Ball ball;
 	private int deltaY = 1;
@@ -24,6 +25,11 @@ public class Arkanoid extends GraphicApplication {
 		
 		for(int i=0; i<tiles.length; i++) {
 			Tile t = tiles[i];
+			t.draw(canvas);
+		}
+		
+		for(int i=0; i<tiles2.length; i++) {
+			Tile t = tiles2[i];
 			t.draw(canvas);
 		}
 		
@@ -43,13 +49,29 @@ public class Arkanoid extends GraphicApplication {
 		paddle.setPosition(100, 183);
 		
 		for (int i=0; i<tiles.length; i++) {
-			//tile = new Tile(Color.RED);
-			//tile.setPosition(20, 20);
-			Tile t = new Tile(randomColor());
+		
+			Tile t = new Tile(Color.RED);
 			t.setPosition(5+(i*22), 20);
 			
 			tiles[i] = t;
 		}
+		
+		for (int i=0; i<tiles2.length; i++) {
+			
+			Tile t = new Tile(Color.GREEN);
+			t.setPosition(5+(i*22), 30);
+			
+			tiles2[i] = t;
+		}
+		
+//		for (int i=0; i<tiles.length; i++) {
+//			//tile = new Tile(Color.RED);
+//			//tile.setPosition(20, 20);
+//			Tile t = new Tile(randomColor());
+//			t.setPosition(5+(i*22), 20);
+//			
+//			tiles[i] = t;
+//		}
 		
 		
 		bindKeyPressed("LEFT", new KeyboardAction() {
@@ -84,6 +106,13 @@ public class Arkanoid extends GraphicApplication {
 		
 		for(int i=0; i<tiles.length; i++){
 			Tile t = tiles[i];
+			if (t.collided(ball)) {
+				Console.println("Collided!");
+			}
+		}
+		
+		for(int i=0; i<tiles2.length; i++){
+			Tile t = tiles2[i];
 			if (t.collided(ball)) {
 				Console.println("Collided!");
 			}

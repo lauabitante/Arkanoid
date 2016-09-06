@@ -9,7 +9,7 @@ public class Ball extends Sprite {
 	}
 	
 	public int getRadius() {
-		return getWidth()/2;
+		return (getWidth() * getHeight())/2;
 	}
 
 	@Override
@@ -18,7 +18,4 @@ public class Ball extends Sprite {
 		int r = getRadius();
 		return new Point(pos.x + r, pos.y + r);
 	}
-
-	
-	
 }

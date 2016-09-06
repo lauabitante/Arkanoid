@@ -8,8 +8,8 @@ public class Tile extends Sprite {
 	
 	private boolean alive = true;
 
-	public Tile(Color cor) {
-		super(20, 5, cor);
+	public Tile(Color color) {
+		super(20, 5, color);
 	}
 
 	//this method is used to verify if the ball collided with the tile.
@@ -21,7 +21,7 @@ public class Tile extends Sprite {
 		Point pos = ball.getPosition();
 		int raio = ball.getRadius();
 		
-		Rect rect=getBounds();
+		Rect rect = getBounds();
 		int top = rect.y;
 		int bottom = rect.y + rect.height;
 		int left = rect.x;
