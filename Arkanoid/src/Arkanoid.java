@@ -14,7 +14,7 @@ public class Arkanoid extends GraphicApplication {
 	//private Tile tile;
 	private Tile tiles[] = new Tile[10];
 	private Tile tiles2[] = new Tile[10];
-	private Sprite paddle;
+	private Paddle paddle;
 	private Ball ball;
 	private int deltaY = 1;
 	private int deltaX = 1;
@@ -45,8 +45,8 @@ public class Arkanoid extends GraphicApplication {
 		ball = new Ball();
 		ball.setPosition(130,180);
 		
-		paddle = new Sprite(30, 3, Color.DARKGRAY);
-		paddle.setPosition(100, 183);
+		paddle = new Paddle();
+		paddle.setPosition(100, 100);//183
 		
 		for (int i=0; i<tiles.length; i++) {
 		
@@ -77,13 +77,13 @@ public class Arkanoid extends GraphicApplication {
 		bindKeyPressed("LEFT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				paddle.move(-3, 0);
+				paddle.move(-4, 0);
 			}
 		});
 		bindKeyPressed("RIGHT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				paddle.move(3, 0);
+				paddle.move(4, 0);
 			}
 		});
 	}
@@ -94,15 +94,30 @@ public class Arkanoid extends GraphicApplication {
 		Point pos = ball.getPosition();
 		if (testScreenBounds(pos.y,0,getResolution().height)) {
 			deltaY *= -1;
+			
+			Console.println("Y");
+	
 		}
 		if (testScreenBounds(pos.x,0,getResolution().width)) {
 			deltaX *= -1;
+			Console.println("X");
 		}
+		
+		if (paddle.collided(ball)) {
+			deltaY = -1;
+			
+			Console.println("Collided PADDLE!");
+		}
+		
 		ball.move(deltaX, deltaY);
+	
 		
 //		if (tile.collided(ball)) {
 //			Console.println("Collided!");
 //		}
+		
+//		paddle.collided(ball);
+		
 		
 		for(int i=0; i<tiles.length; i++){
 			Tile t = tiles[i];
