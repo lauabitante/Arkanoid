@@ -46,12 +46,12 @@ public class Arkanoid extends GraphicApplication {
 		ball.setPosition(130,180);
 		
 		paddle = new Paddle();
-		paddle.setPosition(100, 100);//183
+		paddle.setPosition(100, 183);
 		
 		for (int i=0; i<tiles.length; i++) {
 		
 			Tile t = new Tile(Color.RED);
-			t.setPosition(5+(i*22), 20);
+			t.setPosition(5 + (i*22), 20);
 			
 			tiles[i] = t;
 		}
@@ -77,7 +77,7 @@ public class Arkanoid extends GraphicApplication {
 		bindKeyPressed("LEFT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				paddle.move(-4, 0);
+				paddle.move(-6, 0);
 			}
 		});
 		bindKeyPressed("RIGHT", new KeyboardAction() {
@@ -94,7 +94,6 @@ public class Arkanoid extends GraphicApplication {
 		Point pos = ball.getPosition();
 		if (testScreenBounds(pos.y,0,getResolution().height)) {
 			deltaY *= -1;
-			
 			Console.println("Y");
 	
 		}
@@ -103,14 +102,11 @@ public class Arkanoid extends GraphicApplication {
 			Console.println("X");
 		}
 		
+		//if collided paddle
 		if (paddle.collided(ball)) {
 			deltaY = -1;
-			
 			Console.println("Collided PADDLE!");
 		}
-		
-		ball.move(deltaX, deltaY);
-	
 		
 //		if (tile.collided(ball)) {
 //			Console.println("Collided!");
@@ -119,19 +115,34 @@ public class Arkanoid extends GraphicApplication {
 //		paddle.collided(ball);
 		
 		
-		for(int i=0; i<tiles.length; i++){
+		for (int i=0; i<tiles.length; i++) {
 			Tile t = tiles[i];
 			if (t.collided(ball)) {
+				
+				if (ball.getPosition().y > t.getPosition().y) {
+					deltaY = 1;
+				}
+				else {
+					deltaY = -1;
+				}
 				Console.println("Collided!");
 			}
 		}
 		
-		for(int i=0; i<tiles2.length; i++){
+		for (int i=0; i<tiles2.length; i++) {
 			Tile t = tiles2[i];
 			if (t.collided(ball)) {
+				if(ball.getPosition().y > t.getPosition().y){
+					deltaY = 1;
+				}
+				else {
+					deltaY = -1;
+				}
 				Console.println("Collided!");
 			}
 		}
+		
+		ball.move(deltaX, deltaY);
 		
 		redraw();	
 	}
