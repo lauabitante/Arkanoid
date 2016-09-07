@@ -1,4 +1,7 @@
+import java.awt.Font;
 import java.util.Random;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import com.senac.SimpleJava.Console;
 import com.senac.SimpleJava.Graphics.Canvas;
@@ -18,9 +21,13 @@ public class Arkanoid extends GraphicApplication {
 	private Ball ball;
 	private int deltaY = 1;
 	private int deltaX = 1;
+	private int score = 0;
+	private JLabel lblScore = new JLabel("Score: " + score, SwingConstants.CENTER);
+	Font fontScore = new Font("courier", Font.PLAIN, 13);
 
 	@Override
 	protected void draw(Canvas canvas) {
+		
 		canvas.clear();
 		
 		for(int i=0; i<tiles.length; i++) {
@@ -35,6 +42,7 @@ public class Arkanoid extends GraphicApplication {
 		
 		ball.draw(canvas);
 		paddle.draw(canvas);
+		canvas.add(lblScore);
 	}
 
 	@Override
@@ -73,19 +81,25 @@ public class Arkanoid extends GraphicApplication {
 //			tiles[i] = t;
 //		}
 		
-		
 		bindKeyPressed("LEFT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
 				paddle.move(-6, 0);
 			}
 		});
+		
 		bindKeyPressed("RIGHT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
 				paddle.move(4, 0);
 			}
 		});
+		
+		
+			lblScore.setVisible(true);
+			lblScore.setBounds(0, -33, 100, 100);
+			lblScore.setFont(fontScore);
+			//lblScore.setForeground(Color.BLUE);
 	}
 
 	@Override
@@ -114,7 +128,7 @@ public class Arkanoid extends GraphicApplication {
 		
 //		paddle.collided(ball);
 		
-		
+		//COLISÃO TILES
 		for (int i=0; i<tiles.length; i++) {
 			Tile t = tiles[i];
 			if (t.collided(ball)) {
@@ -126,6 +140,7 @@ public class Arkanoid extends GraphicApplication {
 					deltaY = -1;
 				}
 				Console.println("Collided!");
+				score += 10;
 			}
 		}
 		
@@ -139,8 +154,11 @@ public class Arkanoid extends GraphicApplication {
 					deltaY = -1;
 				}
 				Console.println("Collided!");
+				score += 10;
 			}
 		}
+		
+		lblScore.setText("Score: "+ score);
 		
 		ball.move(deltaX, deltaY);
 		
