@@ -7,9 +7,11 @@ import com.senac.SimpleJava.Graphics.Sprite;
 public class Tile extends Sprite {
 	
 	private boolean alive = true;
+	private int lifeTile = 0;
 
-	public Tile(Color color) {
+	public Tile(Color color, int life) {
 		super(20, 5, color);
+		this.lifeTile = life;
 	}
 
 	//this method is used to verify if the ball collided with the tile.
@@ -40,7 +42,16 @@ public class Tile extends Sprite {
 			return false;
 		}
 		
-		alive = false;
+		//alive = false;
+		
+		this.lifeTile --;
+		
+		this.clear(Color.LIGHTGRAY);
+		
+		if(this.lifeTile == 0) {
+			alive = false;
+		}
+		
 		return true;
 	}
 

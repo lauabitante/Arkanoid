@@ -13,38 +13,34 @@ import com.senac.SimpleJava.Graphics.Sprite;
 import com.senac.SimpleJava.Graphics.events.KeyboardAction;
 
 public class Arkanoid extends GraphicApplication {
-
-	//private Tile tile;
-	private Tile tiles[] = new Tile[10];
-	private Tile tiles2[] = new Tile[10];
+	
+	private Tile tiles1[] = new Tile[11];
+	private Tile tiles2[] = new Tile[11];
+	private Tile tiles3[] = new Tile[11];
 	private Paddle paddle;
 	private Ball ball;
-	private int deltaY = 1;
-	private int deltaX = 1;
-	private int score = 0;
+	private static int deltaY = 1;
+	private static int deltaX = 1;
+	private static int score = 0;
 	private JLabel lblScore = new JLabel("Score: " + score, SwingConstants.CENTER);
 	Font fontScore = new Font("courier", Font.PLAIN, 13);
 
+	
 	@Override
 	protected void draw(Canvas canvas) {
-		
 		canvas.clear();
 		
-		for(int i=0; i<tiles.length; i++) {
-			Tile t = tiles[i];
-			t.draw(canvas);
-		}
+		//Draw tiles
+		drawTiles(canvas,tiles1);
+		drawTiles(canvas,tiles2);
+		drawTiles(canvas,tiles3);
 		
-		for(int i=0; i<tiles2.length; i++) {
-			Tile t = tiles2[i];
-			t.draw(canvas);
-		}
-		
+		//draw ball, paddle and score
 		ball.draw(canvas);
 		paddle.draw(canvas);
 		canvas.add(lblScore);
 	}
-
+	
 	@Override
 	protected void setup() {
 		this.setFramesPerSecond(60);
@@ -56,50 +52,18 @@ public class Arkanoid extends GraphicApplication {
 		paddle = new Paddle();
 		paddle.setPosition(100, 183);
 		
-		for (int i=0; i<tiles.length; i++) {
+		//Building tiles array
+		buildTiles(tiles1, Color.GRAY, 2, 20);
+		buildTiles(tiles2, Color.GREEN, 1, 30);
+		buildTiles(tiles3, Color.MAGENTA, 1, 40);
 		
-			Tile t = new Tile(Color.RED);
-			t.setPosition(5 + (i*22), 20);
-			
-			tiles[i] = t;
-		}
+		setupKeyboardKeys();
 		
-		for (int i=0; i<tiles2.length; i++) {
-			
-			Tile t = new Tile(Color.GREEN);
-			t.setPosition(5+(i*22), 30);
-			
-			tiles2[i] = t;
-		}
-		
-//		for (int i=0; i<tiles.length; i++) {
-//			//tile = new Tile(Color.RED);
-//			//tile.setPosition(20, 20);
-//			Tile t = new Tile(randomColor());
-//			t.setPosition(5+(i*22), 20);
-//			
-//			tiles[i] = t;
-//		}
-		
-		bindKeyPressed("LEFT", new KeyboardAction() {
-			@Override
-			public void handleEvent() {
-				paddle.move(-6, 0);
-			}
-		});
-		
-		bindKeyPressed("RIGHT", new KeyboardAction() {
-			@Override
-			public void handleEvent() {
-				paddle.move(4, 0);
-			}
-		});
-		
-		
-			lblScore.setVisible(true);
-			lblScore.setBounds(0, -33, 100, 100);
-			lblScore.setFont(fontScore);
-			//lblScore.setForeground(Color.BLUE);
+		//Building score
+		lblScore.setVisible(true);
+		lblScore.setBounds(0, -33, 100, 100);
+		lblScore.setFont(fontScore);
+		//lblScore.setForeground(Color.BLUE);
 	}
 
 	@Override
@@ -122,42 +86,11 @@ public class Arkanoid extends GraphicApplication {
 			Console.println("Collided PADDLE!");
 		}
 		
-//		if (tile.collided(ball)) {
-//			Console.println("Collided!");
-//		}
-		
-//		paddle.collided(ball);
-		
-		//COLISÃO TILES
-		for (int i=0; i<tiles.length; i++) {
-			Tile t = tiles[i];
-			if (t.collided(ball)) {
-				
-				if (ball.getPosition().y > t.getPosition().y) {
-					deltaY = 1;
-				}
-				else {
-					deltaY = -1;
-				}
-				Console.println("Collided!");
-				score += 10;
-			}
-		}
-		
-		for (int i=0; i<tiles2.length; i++) {
-			Tile t = tiles2[i];
-			if (t.collided(ball)) {
-				if(ball.getPosition().y > t.getPosition().y){
-					deltaY = 1;
-				}
-				else {
-					deltaY = -1;
-				}
-				Console.println("Collided!");
-				score += 10;
-			}
-		}
-		
+		//Tiles collision check
+		checkTilesCollision(ball, tiles1);
+		checkTilesCollision(ball, tiles2);
+		checkTilesCollision(ball, tiles3);
+
 		lblScore.setText("Score: "+ score);
 		
 		ball.move(deltaX, deltaY);
@@ -173,7 +106,22 @@ public class Arkanoid extends GraphicApplication {
 		}
 	}
 	
-	private Color randomColor(){  
+	public static void buildTiles(Tile t[], Color c, int life, int posY) {
+		for (int i=0; i<t.length; i++) {
+			Tile tile = new Tile(c, life);
+			tile.setPosition(5 + (i*22), posY);
+			t[i] = tile;
+		}
+	}
+	
+	public static void drawTiles(Canvas c, Tile t[]) {
+		for(int i=0; i<t.length; i++) {
+			Tile tile = t[i];
+			tile.draw(c);
+		}
+	}
+	
+	private Color randomColor() {  
 		Random randColor = new Random();
 		
 		Color colors[] = new Color[5];
@@ -191,4 +139,36 @@ public class Arkanoid extends GraphicApplication {
 //		return new Color(r, g, b);  
 	}
 	
+	public static void checkTilesCollision(Ball ball, Tile t[]) {
+		for (int i=0; i<t.length; i++) {
+			Tile tile = t[i];
+			if (tile.collided(ball)) {
+				
+				if (ball.getPosition().y > tile.getPosition().y) {
+					deltaY = 1;
+				}
+				else {
+					deltaY = -1;
+				}
+				Console.println("Collided!");
+				score += 10;
+			}
+		}
+	}
+	
+	public void setupKeyboardKeys() {
+		bindKeyPressed("LEFT", new KeyboardAction() {
+			@Override
+			public void handleEvent() {
+				paddle.move(-6, 0);
+			}
+		});
+		
+		bindKeyPressed("RIGHT", new KeyboardAction() {
+			@Override
+			public void handleEvent() {
+				paddle.move(4, 0);
+			}
+		});
+	}
 }
