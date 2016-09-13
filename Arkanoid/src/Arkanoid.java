@@ -1,4 +1,5 @@
 import java.awt.Font;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -7,6 +8,7 @@ import com.senac.SimpleJava.Console;
 import com.senac.SimpleJava.Graphics.Canvas;
 import com.senac.SimpleJava.Graphics.Color;
 import com.senac.SimpleJava.Graphics.GraphicApplication;
+import com.senac.SimpleJava.Graphics.Image;
 import com.senac.SimpleJava.Graphics.Point;
 import com.senac.SimpleJava.Graphics.Resolution;
 import com.senac.SimpleJava.Graphics.Sprite;
@@ -22,33 +24,48 @@ public class Arkanoid extends GraphicApplication {
 	private static int deltaY = 1;
 	private static int deltaX = 1;
 	private static int score = 0;
+	private static int playerLife = 3;
 	private JLabel lblScore = new JLabel("Score: " + score, SwingConstants.CENTER);
-	Font fontScore = new Font("courier", Font.PLAIN, 13);
+	private JLabel lblLifes = new JLabel("Lifes: " + playerLife, SwingConstants.CENTER);
+	private JLabel lblGameOver = new JLabel("GAME OVER");
+	Font fontHeader = new Font("courier", Font.BOLD, 13);
+	Font fontGameOver = new Font("courier", Font.BOLD, 30);
+	private Image backgroundImage;
 
 	
 	@Override
 	protected void draw(Canvas canvas) {
 		canvas.clear();
 		
+		canvas.drawImage(backgroundImage,0,0);
+		
 		//Draw tiles
 		drawTiles(canvas,tiles1);
 		drawTiles(canvas,tiles2);
 		drawTiles(canvas,tiles3);
 		
-		//draw ball, paddle and score
+		//Draw components
 		ball.draw(canvas);
 		paddle.draw(canvas);
 		canvas.add(lblScore);
+		canvas.add(lblLifes);
+		canvas.add(lblGameOver);
 	}
 	
 	@Override
 	protected void setup() {
 		this.setFramesPerSecond(60);
 		this.setResolution(Resolution.MSX);
-		
+	
+		try {
+			backgroundImage = new Image("images/background.jpg");
+		} catch (IOException e) {
+			e.printStackTrace(System.err);
+		}
+
 		ball = new Ball();
 		ball.setPosition(130,180);
-		
+
 		paddle = new Paddle();
 		paddle.setPosition(100, 183);
 		
@@ -62,25 +79,49 @@ public class Arkanoid extends GraphicApplication {
 		//Building score
 		lblScore.setVisible(true);
 		lblScore.setBounds(0, -33, 100, 100);
-		lblScore.setFont(fontScore);
+		lblScore.setFont(fontHeader);
 		//lblScore.setForeground(Color.BLUE);
+		
+		//Lifes player
+		lblLifes.setVisible(true);
+		lblLifes.setBounds(200, -33, 100, 100);
+		lblLifes.setFont(fontHeader);
+		
+		//Game Over
+		lblGameOver.setVisible(false);
+		lblGameOver.setBounds(325, 150, 300, 300);
+		lblGameOver.setFont(fontGameOver);
 	}
 
 	@Override
 	protected void loop() {
+		
 		//Testando os limites do eixo X e Y.
 		Point pos = ball.getPosition();
 		if (testScreenBounds(pos.y,0,getResolution().height)) {
-			deltaY *= -1;
 			Console.println("Y");
-	
+			Console.println(deltaY);
+			
+			if (deltaY == 1){
+				playerLife--;
+			}
+			if (playerLife == 0){
+				deltaY = 0;
+				deltaX = 0;
+				Console.println("Game Over");
+				lblGameOver.setVisible(true);
+			}
+			else {
+				deltaY *= -1;
+			}
 		}
+		
 		if (testScreenBounds(pos.x,0,getResolution().width)) {
 			deltaX *= -1;
 			Console.println("X");
 		}
 		
-		//if collided paddle
+		//Check collided paddle
 		if (paddle.collided(ball)) {
 			deltaY = -1;
 			Console.println("Collided PADDLE!");
@@ -92,6 +133,8 @@ public class Arkanoid extends GraphicApplication {
 		checkTilesCollision(ball, tiles3);
 
 		lblScore.setText("Score: "+ score);
+		
+		lblLifes.setText("Lifes: "+ playerLife);
 		
 		ball.move(deltaX, deltaY);
 		

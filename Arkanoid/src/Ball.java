@@ -5,7 +5,7 @@ import com.senac.SimpleJava.Graphics.Sprite;
 public class Ball extends Sprite {
 
 	public Ball() {
-		super(5,5,Color.BLACK);
+		super(5,5,Color.DARKGRAY);
 	}
 	
 	public int getRadius() {
