@@ -1,6 +1,6 @@
 import java.awt.Font;
 import java.io.IOException;
-import java.util.Random;
+//import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -11,7 +11,6 @@ import com.senac.SimpleJava.Graphics.GraphicApplication;
 import com.senac.SimpleJava.Graphics.Image;
 import com.senac.SimpleJava.Graphics.Point;
 import com.senac.SimpleJava.Graphics.Resolution;
-import com.senac.SimpleJava.Graphics.Sprite;
 import com.senac.SimpleJava.Graphics.events.KeyboardAction;
 
 public class Arkanoid extends GraphicApplication {
@@ -164,24 +163,24 @@ public class Arkanoid extends GraphicApplication {
 		}
 	}
 	
-	private Color randomColor() {  
-		Random randColor = new Random();
-		
-		Color colors[] = new Color[5];
-		colors[0] = Color.RED;
-		colors[1] = Color.BLUE;
-		colors[2] = Color.MAGENTA;
-		colors[3] = Color.GREEN;
-		colors[4] = Color.YELLOW;
-		
-		return colors[randColor.nextInt(5)];
-		
-//		int r = randColor.nextInt(256);  
-//		int g = randColor.nextInt(256);  
-//		int b = randColor.nextInt(256);  
-//		return new Color(r, g, b);  
-	}
-	
+//	private Color randomColor() {  
+//		Random randColor = new Random();
+//		
+//		Color colors[] = new Color[5];
+//		colors[0] = Color.RED;
+//		colors[1] = Color.BLUE;
+//		colors[2] = Color.MAGENTA;
+//		colors[3] = Color.GREEN;
+//		colors[4] = Color.YELLOW;
+//		
+//		return colors[randColor.nextInt(5)];
+//		
+////		int r = randColor.nextInt(256);  
+////		int g = randColor.nextInt(256);  
+////		int b = randColor.nextInt(256);  
+////		return new Color(r, g, b);  
+//	}
+//	
 	public static void checkTilesCollision(Ball ball, Tile t[]) {
 		for (int i=0; i<t.length; i++) {
 			Tile tile = t[i];
@@ -203,14 +202,19 @@ public class Arkanoid extends GraphicApplication {
 		bindKeyPressed("LEFT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				paddle.move(-6, 0);
+				paddle.getPosition();
+				if(paddle.getPosition().x > 8){
+					paddle.move(-7, 0);
+				}
 			}
 		});
 		
 		bindKeyPressed("RIGHT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				paddle.move(4, 0);
+				if(paddle.getPosition().x + paddle.getWidth() < getResolution().width - 10){
+					paddle.move(7, 0);
+				}
 			}
 		});
 	}
