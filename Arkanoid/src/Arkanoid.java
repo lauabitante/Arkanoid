@@ -27,8 +27,10 @@ public class Arkanoid extends GraphicApplication {
 	private JLabel lblScore = new JLabel("Score: " + score, SwingConstants.CENTER);
 	private JLabel lblLifes = new JLabel("Lifes: " + playerLife, SwingConstants.CENTER);
 	private JLabel lblGameOver = new JLabel("GAME OVER");
+	private JLabel lblRestart = new JLabel("Press spacebar to restart");
 	Font fontHeader = new Font("courier", Font.BOLD, 13);
 	Font fontGameOver = new Font("courier", Font.BOLD, 30);
+	Font fontRestart = new Font("courier", Font.BOLD, 20);
 	private Image backgroundImage;
 
 	
@@ -45,10 +47,12 @@ public class Arkanoid extends GraphicApplication {
 		
 		//Draw components
 		ball.draw(canvas);
+//		ball.draw(canvas.getGraphics());
 		paddle.draw(canvas);
 		canvas.add(lblScore);
 		canvas.add(lblLifes);
 		canvas.add(lblGameOver);
+		canvas.add(lblRestart);
 	}
 	
 	@Override
@@ -90,12 +94,16 @@ public class Arkanoid extends GraphicApplication {
 		lblGameOver.setVisible(false);
 		lblGameOver.setBounds(325, 150, 300, 300);
 		lblGameOver.setFont(fontGameOver);
+		
+		//Restart
+		lblRestart.setVisible(false);
+		lblRestart.setBounds(250, 190, 300, 300);
+		lblRestart.setFont(fontRestart);
 	}
 
 	@Override
 	protected void loop() {
-		
-		//Testando os limites do eixo X e Y.
+		//Testing axis X and Y.
 		Point pos = ball.getPosition();
 		if (testScreenBounds(pos.y,0,getResolution().height)) {
 			Console.println("Y");
@@ -109,6 +117,8 @@ public class Arkanoid extends GraphicApplication {
 				deltaX = 0;
 				Console.println("Game Over");
 				lblGameOver.setVisible(true);
+				Console.println("Restart");
+				lblRestart.setVisible(true);
 			}
 			else {
 				deltaY *= -1;
@@ -132,7 +142,6 @@ public class Arkanoid extends GraphicApplication {
 		checkTilesCollision(ball, tiles3);
 
 		lblScore.setText("Score: "+ score);
-		
 		lblLifes.setText("Lifes: "+ playerLife);
 		
 		ball.move(deltaX, deltaY);
@@ -214,6 +223,19 @@ public class Arkanoid extends GraphicApplication {
 			public void handleEvent() {
 				if(paddle.getPosition().x + paddle.getWidth() < getResolution().width - 10){
 					paddle.move(7, 0);
+				}
+			}
+		});
+		
+		bindKeyPressed("SPACE", new KeyboardAction() {
+			@Override
+			public void handleEvent() {
+				if (playerLife == 0) {
+					setup();
+					deltaY = -1;
+					deltaX = -1;
+					playerLife = 3;
+					score = 0;
 				}
 			}
 		});
