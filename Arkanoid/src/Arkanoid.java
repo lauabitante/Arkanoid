@@ -23,11 +23,19 @@ public class Arkanoid extends GraphicApplication {
 	private static int deltaY = 1;
 	private static int deltaX = 1;
 	private static int score = 0;
+	private static int highScore = 0;
 	private static int playerLife = 3;
+	private static int level = 1;
+	private static int tiles = 44;
+	private static boolean startGame = false;
 	private JLabel lblScore = new JLabel("Score: " + score, SwingConstants.CENTER);
-	private JLabel lblLifes = new JLabel("Lifes: " + playerLife, SwingConstants.CENTER);
+	private JLabel lblHighScore = new JLabel("High Score: " + score, SwingConstants.CENTER);
+	private JLabel lblLife = new JLabel("Life: " + playerLife, SwingConstants.CENTER);
 	private JLabel lblGameOver = new JLabel("GAME OVER");
 	private JLabel lblRestart = new JLabel("Press spacebar to restart");
+	private JLabel lblStartGame = new JLabel("Press enter to start");
+	private JLabel lblLevel = new JLabel("Level: " + level, SwingConstants.CENTER);
+	private JLabel lblWinner = new JLabel("YOU WIN!");
 	Font fontHeader = new Font("courier", Font.BOLD, 13);
 	Font fontGameOver = new Font("courier", Font.BOLD, 30);
 	Font fontRestart = new Font("courier", Font.BOLD, 20);
@@ -50,13 +58,18 @@ public class Arkanoid extends GraphicApplication {
 //		ball.draw(canvas.getGraphics());
 		paddle.draw(canvas);
 		canvas.add(lblScore);
-		canvas.add(lblLifes);
+		canvas.add(lblHighScore);
+		canvas.add(lblLife);
+		canvas.add(lblLevel);
 		canvas.add(lblGameOver);
 		canvas.add(lblRestart);
+		canvas.add(lblStartGame);
+		canvas.add(lblWinner);
 	}
 	
 	@Override
 	protected void setup() {
+		
 		this.setFramesPerSecond(60);
 		this.setResolution(Resolution.MSX);
 	
@@ -65,7 +78,7 @@ public class Arkanoid extends GraphicApplication {
 		} catch (IOException e) {
 			e.printStackTrace(System.err);
 		}
-
+		
 		ball = new Ball();
 		ball.setPosition(130,180);
 
@@ -73,10 +86,30 @@ public class Arkanoid extends GraphicApplication {
 		paddle.setPosition(100, 183);
 		
 		//Building tiles array
-		buildTiles(tiles1, Color.GRAY, 2, 20);
-		buildTiles(tiles2, Color.GREEN, 1, 30);
-		buildTiles(tiles3, Color.MAGENTA, 1, 40);
+		if(level == 1) {
+			buildTiles(tiles1, Color.GRAY, 2, 20);
+			buildTiles(tiles2, Color.GREEN, 1, 30);
+			buildTiles(tiles3, Color.MAGENTA, 1, 40);
+			tiles = 44;
+		}
+		else if(level == 2){
+			buildTiles(tiles1, Color.GRAY, 2, 20);
+			buildTiles(tiles2, Color.RED, 1, 30);
+			buildTiles(tiles3, Color.CYAN, 1, 40);
+			tiles = 44;
+		}
 		
+		else if(level == 3){
+			buildTiles(tiles1, Color.GRAY, 2, 20);
+			buildTiles(tiles2, Color.YELLOW, 1, 30);
+			buildTiles(tiles3, Color.GRAY, 2, 40);
+			tiles = 55; //quantidade de batidas em tiles
+		}
+
+		lblWinner.setVisible(false);
+		lblWinner.setBounds(325, 150, 300, 300);
+		lblWinner.setFont(fontGameOver);
+
 		setupKeyboardKeys();
 		
 		//Building score
@@ -85,11 +118,21 @@ public class Arkanoid extends GraphicApplication {
 		lblScore.setFont(fontHeader);
 		//lblScore.setForeground(Color.BLUE);
 		
-		//Lifes player
-		lblLifes.setVisible(true);
-		lblLifes.setBounds(200, -33, 100, 100);
-		lblLifes.setFont(fontHeader);
+		//Building high score
+		lblHighScore.setVisible(true);
+		lblHighScore.setBounds(600, -33, 200, 100);
+		lblHighScore.setFont(fontHeader);
 		
+		//Life player
+		lblLife.setVisible(true);
+		lblLife.setBounds(200, -33, 100, 100);
+		lblLife.setFont(fontHeader);
+		
+		//Level
+		lblLevel.setVisible(true);
+		lblLevel.setBounds(400, -33, 100, 100);
+		lblLevel.setFont(fontHeader);
+
 		//Game Over
 		lblGameOver.setVisible(false);
 		lblGameOver.setBounds(325, 150, 300, 300);
@@ -99,10 +142,20 @@ public class Arkanoid extends GraphicApplication {
 		lblRestart.setVisible(false);
 		lblRestart.setBounds(250, 190, 300, 300);
 		lblRestart.setFont(fontRestart);
+		
+		//Start
+		lblStartGame.setVisible(false);
+		lblStartGame.setBounds(250, 190, 300, 300);
+		lblStartGame.setFont(fontRestart);
 	}
 
 	@Override
 	protected void loop() {
+		if (startGame == false) { 
+			lblStartGame.setVisible(true);
+			Console.println("Enter to start");
+			return;
+		}
 		//Testing axis X and Y.
 		Point pos = ball.getPosition();
 		if (testScreenBounds(pos.y,0,getResolution().height)) {
@@ -125,6 +178,20 @@ public class Arkanoid extends GraphicApplication {
 			}
 		}
 		
+		if(tiles == 0 && playerLife > 0) {
+			if(level >= 3) {
+				lblWinner.setVisible(true);
+				lblStartGame.setVisible(false);
+				lblRestart.setVisible(true);
+			}
+			else {
+				lblStartGame.setVisible(true);
+				level++;
+//				setup();
+			}
+			startGame = false;
+		}
+		
 		if (testScreenBounds(pos.x,0,getResolution().width)) {
 			deltaX *= -1;
 			Console.println("X");
@@ -142,7 +209,9 @@ public class Arkanoid extends GraphicApplication {
 		checkTilesCollision(ball, tiles3);
 
 		lblScore.setText("Score: "+ score);
-		lblLifes.setText("Lifes: "+ playerLife);
+		lblHighScore.setText("High Score: "+ highScore);
+		lblLife.setText("Life: "+ playerLife);
+		lblLevel.setText("Level: "+ level);
 		
 		ball.move(deltaX, deltaY);
 		
@@ -203,6 +272,10 @@ public class Arkanoid extends GraphicApplication {
 				}
 				Console.println("Collided!");
 				score += 10;
+				if(highScore < score){
+					highScore = score;
+				}
+				tiles--;
 			}
 		}
 	}
@@ -221,8 +294,10 @@ public class Arkanoid extends GraphicApplication {
 		bindKeyPressed("RIGHT", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				if(paddle.getPosition().x + paddle.getWidth() < getResolution().width - 10){
-					paddle.move(7, 0);
+				if(startGame == true){
+					if(paddle.getPosition().x + paddle.getWidth() < getResolution().width - 10){
+						paddle.move(7, 0);
+					}
 				}
 			}
 		});
@@ -230,12 +305,25 @@ public class Arkanoid extends GraphicApplication {
 		bindKeyPressed("SPACE", new KeyboardAction() {
 			@Override
 			public void handleEvent() {
-				if (playerLife == 0) {
-					setup();
+				if (playerLife == 0 || lblWinner.isVisible()) {
 					deltaY = -1;
 					deltaX = -1;
 					playerLife = 3;
 					score = 0;
+					level = 1;
+					startGame = false;
+					setup();
+				}
+			}
+		});
+		
+		bindKeyPressed("ENTER", new KeyboardAction() {
+			@Override
+			public void handleEvent() {
+				if (startGame == false && !lblWinner.isVisible()) {
+					startGame = true;
+					setup();
+					lblStartGame.setVisible(false);
 				}
 			}
 		});
