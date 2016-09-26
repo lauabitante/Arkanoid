@@ -7,10 +7,10 @@ import com.senac.SimpleJava.Graphics.Sprite;
 public class Tile extends Sprite {
 	
 	private boolean alive = true;
-	private int lifeTile = 0;
+	public int lifeTile = 0;
 
 	public Tile(Color color, int life) {
-		super(20, 5, color);
+		super(18, 6, color);
 		this.lifeTile = life;
 	}
 

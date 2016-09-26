@@ -1,12 +1,25 @@
-import com.senac.SimpleJava.Graphics.Color;
+import java.io.IOException;
 import com.senac.SimpleJava.Graphics.Point;
 import com.senac.SimpleJava.Graphics.Rect;
 import com.senac.SimpleJava.Graphics.Sprite;
+import com.senac.SimpleJava.Graphics.Image;
+
 
 public class Paddle extends Sprite {
 
 	public Paddle() {
-		super(30, 3,Color.DARKGRAY);
+		super(paddleImage());
+	}
+	
+	public static Image paddleImage() {
+		Image img = null;
+		try {
+			img = new Image("images/paddle.png");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return img;
 	}
 
 	public boolean collided(Ball ball){
