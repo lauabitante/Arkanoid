@@ -116,6 +116,7 @@ public class Arkanoid extends GraphicApplication {
 		if (startGame == false) { 
 			lblStartGame.setVisible(!lblRestart.isVisible());
 			Console.println("Enter to start");
+			setupPanel();
 			redraw();
 			return;
 		}
@@ -200,10 +201,7 @@ public class Arkanoid extends GraphicApplication {
 		checkTilesCollision(ball, tiles4);
 		checkTilesCollision(ball, tiles5);
 
-		lblScore.setText("SCORE: "+ score);
-		lblHighScore.setText("<html><center>HIGH SCORE<br>" + highScore + "</center></html>");
-		lblLife.setText("LIFE: "+ playerLife);
-		lblLevel.setText("LEVEL: "+ level);
+		setupPanel();
 		
 		ball.move(deltaX, deltaY);
 		
@@ -437,5 +435,12 @@ public class Arkanoid extends GraphicApplication {
 		lblWinner.setBounds(200, 150, 300, 300);
 		lblWinner.setFont(fontWinner);
 		lblWinner.setForeground(java.awt.Color.red);
+	}
+	
+	public void setupPanel() {
+		lblScore.setText("SCORE: "+ score);
+		lblHighScore.setText("<html><center>HIGH SCORE<br>" + highScore + "</center></html>");
+		lblLife.setText("LIFE: "+ playerLife);
+		lblLevel.setText("LEVEL: "+ level);
 	}
 }
