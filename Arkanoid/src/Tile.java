@@ -41,9 +41,7 @@ public class Tile extends Sprite {
 		if(pos.y-raio > bottom) {
 			return false;
 		}
-		
-		//alive = false;
-		
+				
 		this.lifeTile --;
 		
 		this.clear(Color.LIGHTGRAY);

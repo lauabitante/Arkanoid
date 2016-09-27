@@ -15,6 +15,7 @@ public class Paddle extends Sprite {
 		Image img = null;
 		try {
 			img = new Image("images/paddle.png");
+//			img.resize(50, 3);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,5 +55,4 @@ public class Paddle extends Sprite {
 		Point posPaddle = super.getPosition();
 		return new Point(posPaddle.x, posPaddle.y);
 	}
-
 }
